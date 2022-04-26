@@ -19,6 +19,19 @@ static const char *colors[][3]      = {
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
 	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
 };
+typedef struct {
+       const char *name;
+       const void *cmd;
+} Sp;
+const char *spcmd1[] = {"st", "-n", "spterm", "-g", "120x34", NULL };
+const char *spcmd2[] = {"st", "-n", "spfm", "-g", "144x41", "-e", "ranger", NULL };
+const char *spcmd3[] = {"st", "-n", "spterm2", "-g", "120x34", NULL };
+static Sp scratchpads[] = {
+       /* name          cmd  */
+       {"spterm",      spcmd1},
+       {"spranger",    spcmd2},
+       {"spterm2",   spcmd3},
+};
 
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
@@ -29,8 +42,12 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class     instance  title           tags mask  isfloating  isterminal  noswallow  monitor */
-	{ "Gimp",    NULL,     NULL,           0,         1,          0,           0,        -1 },
-	{ "Firefox", NULL,     NULL,           1 << 8,    0,          0,          -1,        -1 },
+        { "Gimp",         NULL,                 NULL,           0,                      1,                       -1 },
+        { "Firefox",      NULL,                 NULL,           1 << 8,                 0,                       -1 },
+        { NULL,           "spterm",             NULL,           SPTAG(0),               1,                       -1 },
+        { NULL,           "spfm",               NULL,           SPTAG(1),               1,                       -1 },
+        { NULL,           "spterm2",            NULL,           SPTAG(2),               1,                       -1 },
+
 	{ "St",      NULL,     NULL,           0,         0,          1,           0,        -1 },
 	{ NULL,      NULL,     "Event Tester", 0,         0,          0,           1,        -1 }, /* xev */
 };
@@ -67,6 +84,8 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
+
+
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
@@ -94,6 +113,9 @@ static Key keys[] = {
 	{ MODKEY,                       XK_semicolon, focusmon,    {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_semicolon, tagmon,      {.i = +1 } },
+        { MODKEY,                       XK_y,      togglescratch,  {.ui = 0 } },
+        { MODKEY,                       XK_u,      togglescratch,  {.ui = 1 } },
+        { MODKEY,                       XK_x,      togglescratch,  {.ui = 2 } },
 	TAGKEYS(                        XK_ampersand,              0)
 	TAGKEYS(                        XK_eacute,                 1)
 	TAGKEYS(                        XK_quotedbl,               2)
@@ -116,7 +138,7 @@ static Button buttons[] = {
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
-	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
+	{ ClkClientWin,         MODKEY,         Button1,        resizemouse,    {0} },
 	{ ClkTagBar,            0,              Button1,        view,           {0} },
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
