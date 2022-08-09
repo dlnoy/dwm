@@ -9,6 +9,11 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "monospace:size=10" };
 static const char dmenufont[]       = "monospace:size=10";
+#define wal "/home/sunny/.config/wal/templates/colors-wal-dwm.h"
+
+#if __has_include(wal)
+#include wal
+#else
 static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444";
 static char normfgcolor[]           = "#bbbbbb";
@@ -20,6 +25,9 @@ static char *colors[][3] = {
        [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
        [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
 };
+#endif
+
+
 typedef struct {
        const char *name;
        const void *cmd;
@@ -114,7 +122,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_semicolon, focusmon,    {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_semicolon, tagmon,      {.i = +1 } },
-	{ MODKEY|ShiftMask,		XK_F5,	   xrdb		   {.v = NULL} },
+	{ MODKEY,			XK_F5,	   xrdb,	   {.v = NULL} },
         { MODKEY,                       XK_y,      togglescratch,  {.ui = 0 } },
         { MODKEY,                       XK_u,      togglescratch,  {.ui = 1 } },
         { MODKEY,                       XK_x,      togglescratch,  {.ui = 2 } },
